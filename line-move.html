@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    #map {
+        width: 100%;
+        height: 100%;
+    }
+
+    #info-box {
+        position: absolute;
+        top: 100px;
+        right: 50px;
+        background: white;
+        padding: 10px;
+        border: 1px solid black;
+        z-index: 1000;
+    }
+
+</style>
+
+<div id="map"></div>
+
+<div id="info-box">
+  Informações aqui!
+</div>
+
+<script>
+
+    var map = L.map('map').setView([-8.0476, -34.8770], 13);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    const origem = L.latLng(-8.0476, -34.8770);
+
+    map.on('move zoom', () => {
+        desenharLinha();
+    });
+
+    function desenharLinha() {
+        // 1. Converter ponto de origem para pixel
+        const origemPixel = map.latLngToContainerPoint(origem);
+
+        // 2. Pegar posição do info-box na tela
+        const infoBox = document.getElementById('info-box');
+        const rect = infoBox.getBoundingClientRect();
+
+        // 3. Calcular o centro do info-box em coordenadas de tela
+        const destinoPixel = L.point(
+            rect.left + rect.width / 2,
+            rect.top + rect.height / 2
+        );
+
+        // 4. Converter ponto de destino de pixel para coordenadas do mapa
+        const destinoLatLng = map.containerPointToLatLng(destinoPixel);
+
+        // 5. Desenhar ou atualizar a linha
+        if (window.linha) {
+            window.linha.setLatLngs([origem, destinoLatLng]);
+        } else {
+            window.linha = L.polyline([origem, destinoLatLng], { color: 'red' }).addTo(map);
+        }
+    }
+
+</script>

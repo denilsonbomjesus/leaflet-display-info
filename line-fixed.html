@@ -1,0 +1,49 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    #map {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<div id="map"></div>
+
+<script>
+
+    var map = L.map('map').setView([-8.0476, -34.8770], 13);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    const origem = L.latLng(-8.0476, -34.8770);  // Recife
+    const destino = L.latLng(-8.0476, -34.8670); // Um pouco ao norte, onde a info será exibida
+
+    const linha = L.polyline([origem, destino], {
+        color: 'blue',
+        weight: 3,
+    }).addTo(map);
+
+    const infoIcon = L.divIcon({
+        className: 'info-box',
+        html: `
+        <div style="
+        background: white; 
+        border: 1px solid black; 
+        padding: 5px;
+        ">
+                Informações aqui!
+                </div>`,
+        iconAnchor: [0, 0]  // Alinhamento
+    });
+
+    const infoMarker = L.marker(destino, { icon: infoIcon }).addTo(map);
+
+</script>
